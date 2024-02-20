@@ -1,41 +1,46 @@
 #include "sort.h"
-
 /**
- * insertion_sort_list - sorts a doubly linked list of integers
- * @list: doubly linked list of integers
- *
- * Return: Void.
+ * insertion_sort_list - function that sorts a doubly linked list
+ * of integers in ascending order using the Insertion sort algorithm
+ * @list: Dobule linked list to sort
  */
-
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *n, *h, *t;
+	listint_t *node;
 
-	if (!(*list) || !(*list)->next)
+	if (list == NULL || (*list)->next == NULL)
 		return;
-	n = *list;
-	while (n)
+	node = (*list)->next;
+	while (node)
 	{
-		if (n->next && (n->n > n->next->n))
+		while ((node->prev) && (node->prev->n > node->n))
 		{
-			h = n->next;
-			for (t = h; t->prev; t = t->prev)
-				if (t->prev->n < t->n)
-					break;
-
-			if (h->next && h->prev)
-				h->prev->next = h->next, h->next->prev = h->prev;
-			else
-				h->prev->next = NULL;
-
-			h->next = t;
-			if (t->prev)
-				t->prev->next = h, h->prev = t->prev, t->prev = h;
-			else
-				t->prev = h, h->prev = NULL, *list = h;
-			print_list(*list), n = *list;
+			node = swap_node(node, list);
+			print_list(*list);
 		}
-		else
-			n = n->next;
+		node = node->next;
 	}
+}
+/**
+ *swap_node - swap a node for his previous one
+ *@node: node
+ *@list: node list
+ *Return: return a pointer to a node which was enter it
+ */
+listint_t *swap_node(listint_t *node, listint_t **list)
+{
+	listint_t *back = node->prev, *current = node;
+	/*NULL, 19, 48, 9, 71, 13, NULL*/
+
+	back->next = current->next;
+	if (current->next)
+		current->next->prev = back;
+	current->next = back;
+	current->prev = back->prev;
+	back->prev = current;
+	if (current->prev)
+		current->prev->next = current;
+	else
+		*list = current;
+	return (current);
 }
